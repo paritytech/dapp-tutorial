@@ -1,9 +1,19 @@
 import React from 'react';
+import {Bond} from 'oo7';
+import {Rspan} from 'oo7-react';
+import {InputBond} from 'parity-reactive-ui';
 
 export class App extends React.Component {
+	constructor() {
+		super();
+		this.bond = new Bond();
+	}
 	render() {
-		return (<div>
-			Hello world!
-		</div>);
+		return (
+			<div>
+				<InputBond bond={this.bond} placeholder="Go ahead and type some text"/>
+				<Rspan>{this.bond}</Rspan>
+			</div>
+		);
 	}
 }

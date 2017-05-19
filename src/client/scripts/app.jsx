@@ -84,12 +84,17 @@ export class Counter extends React.Component {
 export class App extends React.Component {
 	constructor () {
 		super();
-		this.state = { counter: null };
+		this.state = { counter: window.localStorage.counter
+			? parity.bonds.makeContract(window.localStorage.counter, CounterABI)
+			: null };
 		this.deploy = this.deploy.bind(this);
 	}
 	deploy () {
 		let tx = parity.bonds.deployContract(CounterCode, CounterABI);
-		tx.done(s => this.setState({ counter: s.deployed }));
+		tx.done(s => {
+			this.setState({ tx: null, counter: s.deployed });
+			window.localStorage.counter = s.deployed.address;
+		});
 		return tx;
 	}
 	render () {

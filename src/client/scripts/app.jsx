@@ -8,10 +8,9 @@ export class App extends React.Component {
 	render() {
 		return (
 			<div>
-				Current block is:
-				&nbsp;
+				Latest block's timestamp is:&nbsp;
 				<Rspan style={{fontWeight: 'bold'}}>
-					{parity.bonds.height.map(formatBlockNumber)}
+					{parity.bonds.head.timestamp.map(_=>_.toString())}
 				</Rspan>
 			</div>
 		);

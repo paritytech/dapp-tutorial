@@ -9,6 +9,15 @@ export class App extends React.Component {
 		super();
 		this.name = new Bond;
 		this.recipient = parity.bonds.registry.lookupAddress(this.name, 'A');
+		this.state = { current: null };
+	}
+	give () {
+		this.setState({
+			current: parity.bonds.post({
+				to: this.recipient,
+				value: 100 * 1e15
+			})
+		})
 	}
 	render() {
 		return (
@@ -21,8 +30,9 @@ export class App extends React.Component {
 				<BButton
 					content={this.name.map(n => `Give ${n} 100 Finney`)}
 					disabled={this.recipient.map(isNullData)}
-					onClick={() => parity.bonds.post({to: this.recipient, value: 100 * 1e15})}
+					onClick={this.give.bind(this)}
 				/>
+				<Rspan>{this.state.current && this.state.current.map(JSON.stringify)}</Rspan>
 			</div>
 		);
 	}

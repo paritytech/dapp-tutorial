@@ -14,16 +14,19 @@ const Options = ['Red', 'Green', 'Blue'];
 
 class VoteOption extends ReactiveComponent {
 	constructor () {
-		super(['votes']);
+		super(['votes', 'enabled']);
 	}
 	readyRender () {
+		var s = {float: 'left', minWidth: '3em'};
+		if (!this.state.enabled)
+			s.cursor = 'not-allowed';
 		return (<span style={{ borderLeft:
 			`${1 + this.state.votes * 10}px black solid` }}>
 			<a
-				style={{float: 'left', minWidth: '3em'}}
+				style={s}
 				href='#'
-				onClick={this.props.vote}>
-					{this.props.label}
+				onClick={this.state.enabled && this.props.vote}>
+				{this.props.label}
 			</a>
 		</span>);
 	}
@@ -34,13 +37,17 @@ export class App extends React.Component {
 		super();
 		this.counter = parity.bonds.makeContract('0x7aC77Cb854E064f22E747F40b90FE6D6Bc1e3197', CounterABI);
 		this.state = { tx: null };
+		this.voted = this.counter.hasVoted(parity.bonds.me);
 	}
 	render () {
+		var votingEnabled = Bond.all([this.voted, this.state.tx])
+			.map(([v, t]) => !v && (!t || !!t.failed));
 		return (<div>
 			{Options.map((n, i) => (<div key={i}><VoteOption
 				label={n}
 				votes={this.counter.votes(i)}
 				vote={() => this.setState({tx: this.counter.vote(i)})}
+				enabled={votingEnabled}
 			/></div>))}
 			<div style={{marginTop: '1em'}}>
 				<TransactionProgressLabel value={this.state.tx}/>

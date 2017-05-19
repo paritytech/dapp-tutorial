@@ -1,7 +1,7 @@
 import React from 'react';
 import {Bond} from 'oo7';
 import {Rspan, Rimg, ReactiveComponent} from 'oo7-react';
-import {InputBond, HashBond, BButton, TransactionProgressLabel} from 'parity-reactive-ui';
+import {InputBond, HashBond, BButton, TransactionProgressLabel, AccountIcon} from 'parity-reactive-ui';
 import {formatBalance, isNullData} from 'oo7-parity';
 
 const CounterABI = [
@@ -14,7 +14,7 @@ const Options = ['Red', 'Green', 'Blue'];
 
 class VoteOption extends ReactiveComponent {
 	constructor () {
-		super(['votes', 'enabled']);
+		super(['votes', 'enabled', 'already']);
 	}
 	readyRender () {
 		var s = {float: 'left', minWidth: '3em'};
@@ -28,6 +28,11 @@ class VoteOption extends ReactiveComponent {
 				onClick={this.state.enabled && this.props.vote}>
 				{this.props.label}
 			</a>
+			{this.state.already.map(a => (<AccountIcon
+				style={{width: '1.2em', verticalAlign: 'bottom', marginLeft: '1ex'}}
+				key={a}
+				address={a}
+			/>))}
 		</span>);
 	}
 }
@@ -39,6 +44,7 @@ export class App extends React.Component {
 		this.state = { tx: null };
 		this.voted = this.counter.hasVoted(parity.bonds.me);
 		this.prevVote = this.counter.Voted({ who: parity.bonds.me });
+		this.prevVotes = this.counter.Voted({ who: parity.bonds.accounts });
 	}
 	render () {
 		var votingEnabled = Bond.all([this.voted, this.state.tx])
@@ -49,6 +55,7 @@ export class App extends React.Component {
 				votes={this.counter.votes(i)}
 				vote={() => this.setState({tx: this.counter.vote(i)})}
 				enabled={votingEnabled}
+				already={this.prevVotes.map(a => a.filter(x => x.option == i).map(x => x.who))}
 			/></div>))}
 			<div style={{marginTop: '1em'}}>
 				<TransactionProgressLabel value={this.state.tx}/>

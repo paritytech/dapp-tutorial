@@ -5,6 +5,9 @@ module.exports = {
   entry: {
   	app: path.resolve(__dirname, 'src/client/scripts/entry.jsx')
   },
+  node: {
+    fs: 'empty'
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',

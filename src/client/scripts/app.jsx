@@ -1,7 +1,7 @@
 import React from 'react';
 import {Bond} from 'oo7';
 import {Rspan, Rimg, ReactiveComponent} from 'oo7-react';
-import {InputBond, HashBond, BButton, TransactionProgressLabel, AccountIcon} from 'parity-reactive-ui';
+import {InputBond, HashBond, BButton, TransactionProgressLabel, AccountIcon, TransactButton} from 'parity-reactive-ui';
 import {formatBalance, isNullData} from 'oo7-parity';
 
 const CounterABI = [
@@ -84,21 +84,20 @@ export class Counter extends React.Component {
 export class App extends React.Component {
 	constructor () {
 		super();
-		this.state = { tx: null, counter: null };
+		this.state = { counter: null };
 		this.deploy = this.deploy.bind(this);
 	}
 	deploy () {
 		let tx = parity.bonds.deployContract(CounterCode, CounterABI);
-		this.setState({tx});
 		tx.done(s => this.setState({ counter: s.deployed }));
+		return tx;
 	}
 	render () {
 		return (<div>
 			{!!this.state.counter
 				? <Counter contract={this.state.counter} />
 				: <div>
-					<BButton content='Deploy' onClick={this.deploy}/>
-					<TransactionProgressLabel value={this.state.tx}/>
+					<TransactButton content='Deploy' tx={this.deploy} statusText/>
 				</div>
 			}
 		</div>);

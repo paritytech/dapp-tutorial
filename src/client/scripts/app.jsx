@@ -1,6 +1,6 @@
 import React from 'react';
 import {Bond} from 'oo7';
-import {Rspan, Rimg} from 'oo7-react';
+import {Rspan, Rimg, ReactiveComponent} from 'oo7-react';
 import {InputBond, HashBond, BButton, TransactionProgressLabel} from 'parity-reactive-ui';
 import {formatBalance, isNullData} from 'oo7-parity';
 
@@ -12,6 +12,23 @@ const CounterABI = [
 ];
 const Options = ['Red', 'Green', 'Blue'];
 
+class VoteOption extends ReactiveComponent {
+	constructor () {
+		super(['votes']);
+	}
+	readyRender () {
+		return (<span style={{ borderLeft:
+			`${1 + this.state.votes * 10}px black solid` }}>
+			<a
+				style={{float: 'left', minWidth: '3em'}}
+				href='#'
+				onClick={this.props.vote}>
+					{this.props.label}
+			</a>
+		</span>);
+	}
+}
+
 export class App extends React.Component {
 	constructor() {
 		super();
@@ -20,21 +37,11 @@ export class App extends React.Component {
 	}
 	render () {
 		return (<div>
-			{Options.map((n, i) => (<div key={i}>
-				<Rspan style={{
-					borderLeft: this.counter
-						.votes(i)
-						.map(v => `${1 + v * 10}px black solid`)
-				}}>
-					<a
-						style={{float: 'left', minWidth: '3em'}}
-						href='#'
-						onClick={() => this.setState({tx: this.counter.vote(i)})}
-					>
-						{n}
-					</a>
-				</Rspan>
-			</div>))}
+			{Options.map((n, i) => (<div key={i}><VoteOption
+				label={n}
+				votes={this.counter.votes(i)}
+				vote={() => this.setState({tx: this.counter.vote(i)})}
+			/></div>))}
 			<div style={{marginTop: '1em'}}>
 				<TransactionProgressLabel value={this.state.tx}/>
 			</div>

@@ -8,15 +8,8 @@ export class App extends React.Component {
 	render() {
 		return (
 			<div>
-				Default account:&nbsp;
-				<Rspan>{parity.bonds.me}</Rspan>&nbsp;
-				<br/>Given the name of&nbsp;<Rspan>
-					{parity.bonds.accountsInfo[parity.bonds.me].name}
-				</Rspan>
-				<br/>With a balance of&nbsp;
-				<Rspan>
-					{parity.bonds.balance(parity.bonds.me).map(formatBalance)}
-				</Rspan>
+				gavofyork's address is&nbsp;
+				<Rspan>{parity.bonds.registry.lookupAddress('gavofyork', 'A')}</Rspan>
 			</div>
 		);
 	}

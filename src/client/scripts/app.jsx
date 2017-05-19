@@ -38,6 +38,7 @@ export class App extends React.Component {
 		this.counter = parity.bonds.makeContract('0x7aC77Cb854E064f22E747F40b90FE6D6Bc1e3197', CounterABI);
 		this.state = { tx: null };
 		this.voted = this.counter.hasVoted(parity.bonds.me);
+		this.prevVote = this.counter.Voted({ who: parity.bonds.me });
 	}
 	render () {
 		var votingEnabled = Bond.all([this.voted, this.state.tx])
@@ -52,6 +53,9 @@ export class App extends React.Component {
 			<div style={{marginTop: '1em'}}>
 				<TransactionProgressLabel value={this.state.tx}/>
 			</div>
+			<Rspan>
+				{this.prevVote.map(v => v.length > 0 ? `Already voted for ${Options[v[0].option]}` : '')}
+			</Rspan>
 		</div>);
 	}
 }

@@ -37,14 +37,16 @@ class VoteOption extends ReactiveComponent {
 	}
 }
 
-export class App extends React.Component {
+export class Counter extends React.Component {
 	constructor() {
 		super();
-		this.counter = parity.bonds.makeContract('0x7aC77Cb854E064f22E747F40b90FE6D6Bc1e3197', CounterABI);
 		this.state = { tx: null };
-		this.voted = this.counter.hasVoted(parity.bonds.me);
-		this.prevVote = this.counter.Voted({ who: parity.bonds.me });
-		this.prevVotes = this.counter.Voted({ who: parity.bonds.accounts });
+	}
+	componentWillMount () { this.componentWillReceiveProps(this.props); }
+	componentWillReceiveProps (props) {
+		this.voted = this.props.contract.hasVoted(parity.bonds.me);
+		this.prevVote = this.props.contract.Voted({ who: parity.bonds.me });
+		this.prevVotes = this.props.contract.Voted({ who: parity.bonds.accounts });
 	}
 	render () {
 		var votingEnabled = Bond.all([this.voted, this.state.tx])
@@ -52,8 +54,8 @@ export class App extends React.Component {
 		return (<div>
 			{Options.map((n, i) => (<div key={i}><VoteOption
 				label={n}
-				votes={this.counter.votes(i)}
-				vote={() => this.setState({tx: this.counter.vote(i)})}
+				votes={this.props.contract.votes(i)}
+				vote={() => this.setState({tx: this.props.contract.vote(i)})}
 				enabled={votingEnabled}
 				already={this.prevVotes.map(a => a.filter(x => x.option == i).map(x => x.who))}
 			/></div>))}
@@ -63,6 +65,18 @@ export class App extends React.Component {
 			<Rspan>
 				{this.prevVote.map(v => v.length > 0 ? `Already voted for ${Options[v[0].option]}` : '')}
 			</Rspan>
+		</div>);
+	}
+}
+
+export class App extends React.Component {
+	constructor () {
+		super();
+		this.state = { counter: parity.bonds.makeContract('0x7aC77Cb854E064f22E747F40b90FE6D6Bc1e3197', CounterABI) };
+	}
+	render () {
+		return (<div>
+			<Counter contract={this.state.counter} />
 		</div>);
 	}
 }

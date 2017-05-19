@@ -22,6 +22,7 @@ e5b610068600160a060020a036004351661012a565b60408051911515825251908190036020\
 96a7be8e68fe50a3c701db28a91436490b7d53870ca491a35b50565b6001602052600090815\
 2604090205460ff1681565b600060208190529081526040902054815600a165627a7a723058\
 20ef4d0d5cd232790fab92fcd67c633d228600212c1f337d0c68622f19f106c7fc0029';
+const CounterCodeHash = '0x10d2b44a953ecf30231a87c541df5d640b43a30d8ec9a6ed95e411675d8aff42';
 const Options = ['Red', 'Green', 'Blue'];
 
 class VoteOption extends ReactiveComponent {
@@ -77,6 +78,9 @@ export class Counter extends React.Component {
 			<Rspan>
 				{this.prevVote.map(v => v.length > 0 ? `Already voted for ${Options[v[0].option]}` : '')}
 			</Rspan>
+			<div style={{fontSize: 'small'}}>
+				Using contract at {this.props.contract.address}.
+			</div>
 		</div>);
 	}
 }
@@ -88,6 +92,12 @@ export class App extends React.Component {
 			? parity.bonds.makeContract(window.localStorage.counter, CounterABI)
 			: null };
 		this.deploy = this.deploy.bind(this);
+		this.addr = new Bond;
+		this.addr.then(v => {
+			window.localStorage.counter = v;
+			let counter = parity.bonds.makeContract(v, CounterABI);
+			this.setState({ tx: null, counter });
+		});
 	}
 	deploy () {
 		let tx = parity.bonds.deployContract(CounterCode, CounterABI);
@@ -103,6 +113,8 @@ export class App extends React.Component {
 				? <Counter contract={this.state.counter} />
 				: <div>
 					<TransactButton content='Deploy' tx={this.deploy} statusText/>
+					<span style={{margin: '2em'}}>OR</span>
+					<InputBond bond={this.addr} validator={v => v.startsWith('0x') && v.length == 42 && parity.bonds.code(v).map(_ => parity.api.util.sha3(_) == CounterCodeHash)}/>
 				</div>
 			}
 		</div>);

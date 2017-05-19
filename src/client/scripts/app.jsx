@@ -1,7 +1,7 @@
 import React from 'react';
 import {Bond} from 'oo7';
 import {Rspan, Rimg} from 'oo7-react';
-import {InputBond, HashBond, BButton, TransactButton} from 'parity-reactive-ui';
+import {InputBond, HashBond, BButton, TransactionProgressLabel} from 'parity-reactive-ui';
 import {formatBalance, isNullData} from 'oo7-parity';
 
 const CounterABI = [
@@ -16,6 +16,7 @@ export class App extends React.Component {
 	constructor() {
 		super();
 		this.counter = parity.bonds.makeContract('0x7aC77Cb854E064f22E747F40b90FE6D6Bc1e3197', CounterABI);
+		this.state = { tx: null };
 	}
 	render () {
 		return (<div>
@@ -25,11 +26,18 @@ export class App extends React.Component {
 						.votes(i)
 						.map(v => `${1 + v * 10}px black solid`)
 				}}>
-					<span style={{float: 'left', minWidth: '3em'}}>
+					<a
+						style={{float: 'left', minWidth: '3em'}}
+						href='#'
+						onClick={() => this.setState({tx: this.counter.vote(i)})}
+					>
 						{n}
-					</span>
+					</a>
 				</Rspan>
 			</div>))}
+			<div style={{marginTop: '1em'}}>
+				<TransactionProgressLabel value={this.state.tx}/>
+			</div>
 		</div>);
 	}
 }

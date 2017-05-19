@@ -5,11 +5,18 @@ import {InputBond} from 'parity-reactive-ui';
 import {formatBalance} from 'oo7-parity';
 
 export class App extends React.Component {
+	constructor() {
+		super();
+		this.bond = new Bond;
+	}
 	render() {
 		return (
 			<div>
-				gavofyork's address is&nbsp;
-				<Rspan>{parity.bonds.registry.lookupAddress('gavofyork', 'A')}</Rspan>
+				Address of <InputBond bond={this.bond} placeholder='Lookup a name' /> is:<br/>
+				<Rspan>{parity.bonds.registry.lookupAddress(this.bond, 'A')}</Rspan>
+				, it's balance is <Rspan>
+					{parity.bonds.balance(parity.bonds.registry.lookupAddress(this.bond, 'A')).map(formatBalance)}
+				</Rspan>
 			</div>
 		);
 	}

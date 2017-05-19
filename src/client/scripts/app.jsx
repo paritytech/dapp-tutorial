@@ -12,7 +12,7 @@ export class App extends React.Component {
 		return (
 			<div>
 				<InputBond bond={this.bond} placeholder="Go ahead and type some text"/>
-				<Rspan>{this.bond}</Rspan>
+				<Rspan>{this.bond.map(t => t.toUpperCase())}</Rspan>
 			</div>
 		);
 	}

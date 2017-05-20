@@ -1,21 +1,20 @@
 import React from 'react';
-<<<<<<< HEAD
-=======
 import {Rspan} from 'oo7-react';
-import {bonds} from 'oo7-parity';
-import {InlineAccount} from 'parity-reactive-ui';
->>>>>>> local
+import {bonds, ether} from 'oo7-parity';
+import {InlineAccount, TransactButton} from 'parity-reactive-ui';
 
 export class App extends React.Component {
 	render() {
 		return (<div>
-<<<<<<< HEAD
-			Hello world!
-=======
 			Block height is <Rspan>{bonds.height}</Rspan>.
-			<br/>
 			You are <InlineAccount address={bonds.me}/>.
->>>>>>> local
+			<TransactButton
+				content='Give Gav 1 ether'
+				tx={{
+					to: bonds.registry.lookupAddress('gavofyork', 'A'),
+					value: 1000000000000000000
+				}}
+			/>
 		</div>);
 	}
 }

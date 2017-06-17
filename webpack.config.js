@@ -1,4 +1,6 @@
-var path = require('path');
+const webpack = require('webpack'),
+    path = require('path')
+
 
 module.exports = {
   entry: {
@@ -14,6 +16,12 @@ module.exports = {
       { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel-loader", query: { presets: ['es2015', 'react'] } }
     ]
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': '"development"'
+    })
+  ],
+  node: { fs: "empty" },
   resolve: {
     extensions: ['.js', '.json', '.jsx']
   }

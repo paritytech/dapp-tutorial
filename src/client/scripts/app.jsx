@@ -3,7 +3,7 @@ import {Bond, TimeBond} from 'oo7';
 import {Rspan} from 'oo7-react';
 import {InputBond} from 'parity-reactive-ui';
 
-const computeColor = t => t.match(/^[0-9]+$/) ? {color: 'red'} : {color: 'black'}
+const computeColor = t => t.match(/^[0-9]+$/) ? 'red' : 'black'
 const format = ([msg, t]) => `${new Date(t)}: ${msg}`
 
 export class App extends React.Component {
